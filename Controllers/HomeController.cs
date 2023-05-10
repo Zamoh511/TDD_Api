@@ -15,6 +15,8 @@ using System.Web.Mvc;
 using System.Web.Http.Description;
 using Microsoft.AspNetCore.Cors;
 using Foursquare.Model;
+using TDD_Api.DAL;
+using Foursquare.Response;
 
 namespace TDD_Api.Controllers
 {
@@ -22,6 +24,7 @@ namespace TDD_Api.Controllers
     public class HomeController : ApiController
     {
         LandmarkService _landmarkService;
+        DAL_Logic _Dal = new DAL_Logic();
         public ActionResult Index()
         {
             //ViewBag.Title = "Home Page";
@@ -63,5 +66,18 @@ namespace TDD_Api.Controllers
             return response;
         }
 
+        public void SaveImageDetails(FoursquareLocation foursquareLocation)
+        {
+            if(getExistingImage(foursquareLocation) == null)
+            {
+                _Dal.ExecuteStoredProcedure("SaveImageData", foursquareLocation);
+            }
+           
+        }
+        public async Task<FoursquareResponse<VenueSearch>> getExistingImage(FoursquareLocation foursquareLocation)
+        {
+         
+            return _Dal.getProcedureData("RetrieveData");
+        }
     }
 }
